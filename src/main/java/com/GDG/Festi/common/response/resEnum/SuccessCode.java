@@ -1,4 +1,4 @@
-package com.GDG.Festi.common.resEnum;
+package com.GDG.Festi.common.response.resEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ public enum SuccessCode {
     // COMMON
     FOUND_NO_SEARCH_RESULT(200, "조회결과가 없습니다."),
     FOUND_IT(201, "조회가 완료되었습니다."),
-    FOUND_LIST(201, "목록 조회가 완료되었습니다.")
+    FOUND_LIST(201, "목록 조회가 완료되었습니다."),
+    SUCCESS_UPLOAD(200, "폴라로이드가 업로드 되었습니다.")
     ;
 
     private final Integer code;
