@@ -1,5 +1,6 @@
 package com.GDG.Festi.domain.polaroid;
 
+import com.GDG.Festi.common.FileUtil;
 import com.GDG.Festi.common.response.ApiResponse;
 import com.GDG.Festi.common.response.resEnum.ErrorCode;
 import com.GDG.Festi.common.response.resEnum.SuccessCode;
@@ -18,9 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 @Slf4j
 @Service
@@ -29,6 +27,7 @@ public class PolaroidService {
     private final UserRepository userRepository;
     private final PolaroidRepository polaroidRepository;
     private final AmazonS3 amazonS3;
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -41,7 +40,7 @@ public class PolaroidService {
         if (imgFile == null || imgFile.isEmpty()) return ApiResponse.ERROR(ErrorCode.IMG_NOT_FOUND);
 
         // 파일명 생성
-        String filename = generateFileName(imgFile);
+        String filename = FileUtil.generateFileName(imgFile);
 
         // 메타데이터 설정
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -66,7 +65,8 @@ public class PolaroidService {
                     .imgLink(imgLink)
                     .build();
             Polaroid newPolaroidInfo = polaroidRepository.save(polaroidInfo);
-            log.info("폴라로이드 업로드 완료");
+
+            log.info("폴라로이드 업로드 완료, imgLink : {}, polaroidId : {}", imgLink, newPolaroidInfo.getPolaroidId());
 
             // DTO로 변경
             UploadResponseDTO uploadResponseDTO = UploadResponseDTO.builder()
@@ -76,30 +76,7 @@ public class PolaroidService {
 
             return ApiResponse.SUCCESS(SuccessCode.SUCCESS_UPLOAD, uploadResponseDTO);
         } catch (IOException e) {
-            throw new IllegalArgumentException("파일 변환 중 에러 발생하였습니다.");
+            throw new IllegalArgumentException("파일 업로드 중 에러 발생하였습니다.");
         }
-    }
-
-    // 파일명 생성
-    public String generateFileName(MultipartFile file) {
-        // 현재 날짜 및 시간 가져오기
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
-
-        // 원본 파일명 가져오기
-        String originalFileName = file.getOriginalFilename();
-        if (originalFileName == null || !originalFileName.contains(".")) {
-            throw new IllegalArgumentException("잘못된 파일명입니다.");
-        }
-
-        // 확장자 추출
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-
-        // 난수 생성
-        Random random = new Random();
-        int randomNumber = random.nextInt(10000); // 0 ~ 9999
-        String randomStr = String.format("%04d", randomNumber);
-
-        return now.format(formatter) + randomStr + fileExtension;
     }
 }
