@@ -34,7 +34,7 @@ public class PolaroidService {
     /**
      * 폴라로이드 업로드
      * @param imgFile 업로드할 이미지 파일
-     * @return polaroidId 업로드한 이미지 ID
+     * @return imgLink 업로한 이미지 URL, polaroidId 업로드한 이미지 ID
      */
     public ApiResponse<?> upload(MultipartFile imgFile) {
         if (imgFile == null || imgFile.isEmpty()) return ApiResponse.ERROR(ErrorCode.IMG_NOT_FOUND);
