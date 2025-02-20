@@ -7,6 +7,7 @@ import com.GDG.Festi.common.response.resEnum.ErrorCode;
 import com.GDG.Festi.common.response.resEnum.SuccessCode;
 import com.GDG.Festi.domain.UserRepository;
 import com.GDG.Festi.domain.polaroid.dto.response.DownloadResponseDTO;
+import com.GDG.Festi.domain.polaroid.dto.response.UpdateResponseDTO;
 import com.GDG.Festi.domain.polaroid.dto.response.UploadResponseDTO;
 import com.GDG.Festi.entity.Polaroid;
 import com.GDG.Festi.entity.User;
@@ -114,11 +115,12 @@ public class PolaroidService {
         log.info("폴라로이드 수정 완료, imgLink : {}, polaroidId : {}", imgLink, newPolaroidInfo.getPolaroidId());
 
         // DTO 변경
-        UploadResponseDTO uploadResponseDTO = UploadResponseDTO.builder()
+        UpdateResponseDTO updateResponseDTO = UpdateResponseDTO.builder()
                 .imgLink(imgLink)
                 .polaroidId(newPolaroidInfo.getPolaroidId())
+                .userId(userInfo.getUserId().toString())
                 .build();
 
-        return ApiResponse.SUCCESS(SuccessCode.SUCCESS_UPDATE, uploadResponseDTO);
+        return ApiResponse.SUCCESS(SuccessCode.SUCCESS_UPDATE, updateResponseDTO);
     }
 }
