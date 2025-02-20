@@ -5,6 +5,7 @@ import com.GDG.Festi.common.response.ApiResponse;
 import com.GDG.Festi.common.response.resEnum.ErrorCode;
 import com.GDG.Festi.common.response.resEnum.SuccessCode;
 import com.GDG.Festi.domain.UserRepository;
+import com.GDG.Festi.domain.polaroid.dto.response.DownloadResponseDTO;
 import com.GDG.Festi.domain.polaroid.dto.response.UploadResponseDTO;
 import com.GDG.Festi.entity.Polaroid;
 import com.GDG.Festi.entity.User;
@@ -68,7 +69,7 @@ public class PolaroidService {
 
             log.info("폴라로이드 업로드 완료, imgLink : {}, polaroidId : {}", imgLink, newPolaroidInfo.getPolaroidId());
 
-            // DTO로 변경
+            // DTO 변경
             UploadResponseDTO uploadResponseDTO = UploadResponseDTO.builder()
                     .imgLink(imgLink)
                     .polaroidId(newPolaroidInfo.getPolaroidId())
@@ -78,5 +79,25 @@ public class PolaroidService {
         } catch (IOException e) {
             throw new IllegalArgumentException("파일 업로드 중 에러 발생하였습니다.");
         }
+    }
+
+    /**
+     * 폴라로이드 다운로드
+     * @param id 다운로드할 폴라로이드 ID
+     * @return polaroidId 업로드한 이미지 ID, userId 폴라로이드 업로드한 사용자 ID, imgLink 업로한 이미지 URL
+     */
+    public ApiResponse<?> download(Long id) {
+        // 폴라로이드 정보 조회
+        Polaroid polaroidInfo = polaroidRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("폴라로이드 정보를 찾을 수 없습니다."));
+
+        // DTO 변경
+        DownloadResponseDTO downloadResponseDTO = DownloadResponseDTO.builder()
+                .polaroidId(polaroidInfo.getPolaroidId())
+                .userId(polaroidInfo.getUser().getUserId().toString())
+                .imgLink(polaroidInfo.getImgLink())
+                .build();
+
+        return ApiResponse.SUCCESS(SuccessCode.SUCCESS_DOWNLOAD, downloadResponseDTO);
     }
 }
