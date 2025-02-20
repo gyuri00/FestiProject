@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -15,7 +17,7 @@ public class PolaroidController {
 
     // 폴라로이드 업로드
     @PostMapping("/upload")
-    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile imgFile) {
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile imgFile) throws IOException {
         return ResponseEntity.ok().body(polaroidService.upload(imgFile));
     }
 
@@ -23,5 +25,13 @@ public class PolaroidController {
     @GetMapping("/download/{id}")
     public ResponseEntity<?> download(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(polaroidService.download(id));
+    }
+
+    // 폴라로이드 수정
+    @PostMapping("/update")
+    public ResponseEntity<?> update(
+            @RequestParam("file") MultipartFile imgFile,
+            @RequestParam("polaroidId") Long id) throws IOException {
+        return ResponseEntity.ok().body(polaroidService.update(imgFile, id));
     }
 }
