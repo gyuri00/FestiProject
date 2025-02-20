@@ -34,4 +34,10 @@ public class PolaroidController {
             @RequestParam("polaroidId") Long id) throws IOException {
         return ResponseEntity.ok().body(polaroidService.update(imgFile, id));
     }
+
+    // 폴라로이드 삭제
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(polaroidService.delete(id));
+    }
 }

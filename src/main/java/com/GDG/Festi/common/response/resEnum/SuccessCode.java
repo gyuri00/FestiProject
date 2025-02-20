@@ -12,7 +12,8 @@ public enum SuccessCode {
     FOUND_LIST(201, "목록 조회가 완료되었습니다."),
     SUCCESS_UPLOAD(200, "폴라로이드가 업로드되었습니다."),
     SUCCESS_DOWNLOAD(200, "폴라로이드 다운로드되었습니다."),
-    SUCCESS_UPDATE(200, "폴라로이드 업데이트되었습니다.")
+    SUCCESS_UPDATE(200, "폴라로이드 업데이트되었습니다."),
+    SUCCESS_DELETE(200, "폴라로이드가 삭제되었습니다.")
     ;
 
     private final Integer code;

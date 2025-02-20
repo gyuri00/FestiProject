@@ -123,4 +123,23 @@ public class PolaroidService {
 
         return ApiResponse.SUCCESS(SuccessCode.SUCCESS_UPDATE, updateResponseDTO);
     }
+
+    /**
+     * 폴라로이드 삭제
+     * @param id 삭제할 폴라로이드 ID
+     * @return MSG
+     */
+    public ApiResponse<?> delete(Long id) {
+        // 폴라로이드 정보 조회
+        Polaroid polaroidInfo = polaroidRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("폴라로이드 정보를 찾을 수 없습니다."));
+
+        // 기존 이미지 삭제
+        String deleteImgLink = s3Service.deleteFile(polaroidInfo.getImgLink());
+        polaroidRepository.deleteById(polaroidInfo.getPolaroidId());
+
+        log.info("폴라로이드가 삭제되었습니다, imgLink : {}, polaroidId : {}", deleteImgLink, polaroidInfo.getPolaroidId());
+
+        return ApiResponse.SUCCESS(SuccessCode.SUCCESS_DELETE);
+    }
 }
