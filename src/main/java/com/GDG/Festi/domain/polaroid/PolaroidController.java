@@ -46,4 +46,10 @@ public class PolaroidController {
     public ResponseEntity<?> search() {
         return ResponseEntity.ok().body(polaroidService.search());
     }
+
+    // 폴라로이드 개인 조회
+    @GetMapping("/search/my")
+    public ResponseEntity<?> searchMy() {
+        return ResponseEntity.ok().body(polaroidService.searchMy());
+    }
 }

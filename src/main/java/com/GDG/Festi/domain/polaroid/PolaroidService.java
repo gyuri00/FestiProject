@@ -156,13 +156,45 @@ public class PolaroidService {
         List<SearchResponseDTO> polaroidList = new ArrayList<>();
 
         // DTO 변경
-        for (Polaroid polaroid : randomPolaroids) {
-            polaroidList.add(new SearchResponseDTO(
-                    polaroid.getPolaroidId(),
-                    polaroid.getUser().getUserId().toString(),
-                    polaroid.getImgLink()
-            ));
+        if (randomPolaroids.isEmpty()) {
+            return ApiResponse.SUCCESS(SuccessCode.NO_CONTENT);
+        } else {
+            for (Polaroid polaroid : randomPolaroids) {
+                polaroidList.add(new SearchResponseDTO(
+                        polaroid.getPolaroidId(),
+                        polaroid.getUser().getUserId().toString(),
+                        polaroid.getImgLink()
+                ));
+            }
+            return ApiResponse.SUCCESS(SuccessCode.FOUND_IT, polaroidList);
         }
-        return ApiResponse.SUCCESS(SuccessCode.FOUND_IT, polaroidList);
+    }
+
+    /**
+     * 폴라로이드 개인 조회
+     * @return polaroidId 폴라로이드 Id, imgLink 폴라로이드 URL, userId 사용자 ID List<> 리턴
+     */
+    public ApiResponse<?> searchMy() {
+        // TODO.사용자 정보 받아오기(수정예정)
+        User userInfo = userRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 사용자 정보 기준으로 폴라로이드 정보 조회
+        List<Polaroid> polaroids = polaroidRepository.findByUser(userInfo);
+        List<SearchResponseDTO> polaroidList = new ArrayList<>();
+
+        // DTO 변경
+        if (polaroids.isEmpty()) {
+            return ApiResponse.SUCCESS(SuccessCode.NO_CONTENT);
+        } else {
+            for (Polaroid polaroid : polaroids) {
+                polaroidList.add(new SearchResponseDTO(
+                        polaroid.getPolaroidId(),
+                        polaroid.getUser().getUserId().toString(),
+                        polaroid.getImgLink()
+                ));
+            }
+            return ApiResponse.SUCCESS(SuccessCode.FOUND_IT, polaroidList);
+        }
     }
 }
