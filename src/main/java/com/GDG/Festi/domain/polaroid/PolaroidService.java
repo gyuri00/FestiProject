@@ -7,6 +7,7 @@ import com.GDG.Festi.common.response.resEnum.ErrorCode;
 import com.GDG.Festi.common.response.resEnum.SuccessCode;
 import com.GDG.Festi.domain.UserRepository;
 import com.GDG.Festi.domain.polaroid.dto.response.DownloadResponseDTO;
+import com.GDG.Festi.domain.polaroid.dto.response.SearchResponseDTO;
 import com.GDG.Festi.domain.polaroid.dto.response.UpdateResponseDTO;
 import com.GDG.Festi.domain.polaroid.dto.response.UploadResponseDTO;
 import com.GDG.Festi.entity.Polaroid;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -39,7 +42,7 @@ public class PolaroidService {
         // S3에 이미지 업로드
         String imgLink = s3Service.uploadFile(imgFile, FileUtil.generateFileName(imgFile));
 
-        // 사용자 정보 받아오기
+        // TODO.사용자 정보 받아오기(수정예정)
         User userInfo = userRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
@@ -101,7 +104,7 @@ public class PolaroidService {
         // 변경 이미지 S3에 업로드
         String imgLink = s3Service.uploadFile(imgFile, FileUtil.generateFileName(imgFile));
 
-        // 사용자 정보 받아오기
+        // TODO.사용자 정보 받아오기(수정예정)
         User userInfo = userRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
@@ -141,5 +144,25 @@ public class PolaroidService {
         log.info("폴라로이드가 삭제되었습니다, imgLink : {}, polaroidId : {}", deleteImgLink, polaroidInfo.getPolaroidId());
 
         return ApiResponse.SUCCESS(SuccessCode.SUCCESS_DELETE);
+    }
+
+    /**
+     * 폴라로이드 전체 조회
+     * @return polaroidId 폴라로이드 Id, imgLink 폴라로이드 URL, userId 사용자 ID List<> 리턴
+     */
+    public ApiResponse<?> search() {
+        // 최대 20개 폴라로이드 정보 랜덤 조회
+        List<Polaroid> randomPolaroids = polaroidRepository.findRandomPolaroids();
+        List<SearchResponseDTO> polaroidList = new ArrayList<>();
+
+        // DTO 변경
+        for (Polaroid polaroid : randomPolaroids) {
+            polaroidList.add(new SearchResponseDTO(
+                    polaroid.getPolaroidId(),
+                    polaroid.getUser().getUserId().toString(),
+                    polaroid.getImgLink()
+            ));
+        }
+        return ApiResponse.SUCCESS(SuccessCode.FOUND_IT, polaroidList);
     }
 }

@@ -40,4 +40,10 @@ public class PolaroidController {
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(polaroidService.delete(id));
     }
+
+    // 폴라로이드 전체 조회
+    @GetMapping("/search")
+    public ResponseEntity<?> search() {
+        return ResponseEntity.ok().body(polaroidService.search());
+    }
 }
