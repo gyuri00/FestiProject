@@ -17,7 +17,7 @@ public class Polaroid extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Users user;
 
     private String imgLink; // 폴라로이드 img 링크
 }

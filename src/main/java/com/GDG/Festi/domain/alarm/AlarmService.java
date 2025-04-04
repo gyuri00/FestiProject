@@ -2,10 +2,10 @@ package com.GDG.Festi.domain.alarm;
 
 import com.GDG.Festi.common.response.ApiResponse;
 import com.GDG.Festi.common.response.resEnum.SuccessCode;
-import com.GDG.Festi.domain.UserRepository;
+import com.GDG.Festi.domain.user.UserRepository;
 import com.GDG.Festi.domain.alarm.dto.response.SearchResponseDTO;
 import com.GDG.Festi.entity.Alarm;
-import com.GDG.Festi.entity.User;
+import com.GDG.Festi.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class AlarmService {
 
     public ApiResponse<?> search() {
         // TODO.사용자 정보 받아오기(수정예정)
-        User userInfo = userRepository.findById(1L)
+        Users userInfo = userRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         // 사용자 정보 기준으로 알림 정보 조회

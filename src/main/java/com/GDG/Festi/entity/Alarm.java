@@ -19,7 +19,7 @@ public class Alarm extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Users user;
 
     private String alarmMsg;
     private LocalDateTime sendTime;
